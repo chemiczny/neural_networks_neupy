@@ -115,7 +115,8 @@ class NeuralNetworkManager:
                 "hessian" : algorithms.Hessian,
                 "LevenbergMarquardt": algorithms.LevenbergMarquardt,
                 "RPROP" : algorithms.RPROP,
-                "iRPROPPlus" : algorithms.IRPROPPlus
+                "iRPROPPlus" : algorithms.IRPROPPlus,
+                "Adam" : algorithms.Adam
                 }
         
         if not isdir("savedNN"):
@@ -130,7 +131,7 @@ class NeuralNetworkManager:
         
         self.initResultsFile()
         
-        self.maxEpochsNo = 2000
+        self.maxEpochsNo = 1000
         self.epochsNoCheck = 50
         self.maxEpochsValidationErrorIsRising = 10
         

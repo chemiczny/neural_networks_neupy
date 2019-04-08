@@ -10,6 +10,7 @@ import pickle
 from dataPreprocessor import DataPreprocessor
 #from neupy import algorithms
 import numpy as np
+import matplotlib.pyplot as plt
 
 def mse( A, B):
     B = np.reshape(B, A.shape)
@@ -18,7 +19,7 @@ def mse( A, B):
 
 data = DataPreprocessor()
 
-with open('ANNbestinputs20.inp.pickle', 'rb') as f:
+with open('savedNN/ANNbestinputs65.inp.pickle', 'rb') as f:
     loadedNN = pickle.load(f)
     
 print("train")
@@ -33,3 +34,6 @@ print(mse( loadedNN.predict(data.validationX), data.validationY ))
 predicted = loadedNN.predict( data.allX.values )
 
 a, b, r,r2 = data.comparePredictedVsReal(predicted)
+
+print(r, r2)
+plt.scatter(a,b)

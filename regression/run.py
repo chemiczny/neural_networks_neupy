@@ -32,4 +32,4 @@ while line:
     line = inputFile.readline()
 
 
-inputName.close()
+inputFile.close()
