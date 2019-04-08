@@ -30,7 +30,5 @@ def mergeLogs( logList  ):
     
     final_log.close()
     
-results = glob( "results/*inp*dat" )
-results = [ "results/results0.log" ] + results
 
-mergeLogs(results)
+mergeLogs( [ "results/results0.dat" , "results/*inp*dat" ] )
