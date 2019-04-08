@@ -86,20 +86,20 @@ class DataPreprocessor:
         realValues += originalMin
         allPredicted += originalMin
         
-        plt.figure()
-
-        plt.scatter( realValues , allPredicted )
-        
-        print(realValues.shape)
-        print(allPredicted.shape)
+#        plt.figure()
+#
+#        plt.scatter( realValues , allPredicted )
+#        
+#        print(realValues.shape)
+#        print(allPredicted.shape)
         xy = np.column_stack( (realValues, allPredicted) )
 #        
-        print(xy.shape)
+#        print(xy.shape)
         R = np.corrcoef( np.transpose(xy))[0,1]
 #        
-        print(R, R*R)
+#        print(R, R*R)
 #        print(R.shape)
-        return realValues, allPredicted
+        return realValues, allPredicted, R, R*R
         
     def analyseCorrelationMatrix(self):
         columns =  self.inputColumns + [ "rSA Zm.zal" ]

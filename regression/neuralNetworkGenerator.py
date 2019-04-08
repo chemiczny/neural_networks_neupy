@@ -71,6 +71,10 @@ class ControlTraining(object):
         
 class NeuralNetworkManager:
     def __init__(self, dataObject, filesId = "0"):
+        self.dataObject = dataObject
+        
+        self.allX = dataObject.allX.values
+        
         self.trainX = dataObject.trainX.values
         self.trainY = dataObject.trainY.values
         
@@ -109,7 +113,9 @@ class NeuralNetworkManager:
                 "conjugateGradient" : algorithms.ConjugateGradient,
                 "quasiNewton" : algorithms.QuasiNewton,
                 "hessian" : algorithms.Hessian,
-                "LevenbergMarquardt": algorithms.LevenbergMarquardt
+                "LevenbergMarquardt": algorithms.LevenbergMarquardt,
+                "RPROP" : algorithms.RPROP,
+                "iRPROPPlus" : algorithms.IRPROPPlus
                 }
         
         if not isdir("savedNN"):
@@ -136,21 +142,9 @@ class NeuralNetworkManager:
         resFile = open(self.resultsLog, 'w')
         
         resFile.write("ID\tHidden neurons\tHidden layer activation function\tOutput layer activation function\t")
-        resFile.write("Optimising algorithm\tTrain error\tTest error\tValidation rmsd\tTraining time\tEpochs no eval\tEpoch no selected\tStatus\n")
+        resFile.write("Optimising algorithm\tTrain error\tTest error\tValidation rmsd\tTraining time\tEpochs no eval\tEpoch no selected\tStatus\tR\tR2\n")
         
         resFile.close()
-        
-#    def generateNetworks(self):
-#        self.NNno = 0
-#        for hiddenNno in self.nNeuronsInHiddenLayer:
-#            for afHidden in self.activationFunctionHiddenLayer:
-#                for afOut in self.activationFunctionOutputLayer:
-#                    for optim in self.optimizers:
-#                        self.runNN( hiddenNno, afHidden, afOut, optim )
-                        
-#    def runNN(self, hiddenNeurons, afHidden, afOut, optim):
-#        for i in range(self.noTryOneNN):
-#            self.tryNN(hiddenNeurons, afHidden, afOut, optim)
                         
     def runNN(self, hiddenNeurons, afHidden, afOut, optim):
         network = layers.join( layers.Input( self.nInputs ) ,
@@ -179,20 +173,22 @@ class NeuralNetworkManager:
             status = optimizer.signals.status
             selectedEpoch = optimizer.signals.epochSelected
             
-#            optimizer.plot_errors()
-#            print(optimizer.get_params())
-            self.logRow( hiddenNeurons, afHidden, afOut, optim, trainLoss, testLoss, validationLoss, trainingTime, epochsNo, status, selectedEpoch )
+            allPredicted = optimizer.predict( self.allX )
+            
+            a, b, r, r2 = self.dataObject.comparePredictedVsReal(allPredicted)
+            
+            self.logRow( hiddenNeurons, afHidden, afOut, optim, trainLoss, testLoss, validationLoss, trainingTime, epochsNo, status, selectedEpoch, r, r2 )
         except:
             pass
                 
-    def logRow( self, hiddenNeurons, afHidden, afOut, optim, trainLoss, testLoss, validationLoss, trainingTime, epochsNo, status, selectedEpoch):
+    def logRow( self, hiddenNeurons, afHidden, afOut, optim, trainLoss, testLoss, validationLoss, trainingTime, epochsNo, status, selectedEpoch, r, r2):
         logFile = open( self.resultsLog, "a" )
         
         logFile.write( self.fileId + "\t"+str(hiddenNeurons)+"\t"+
                       afHidden+"\t"+afOut+"\t"+
                       optim+"\t"+str(trainLoss)+
                       "\t"+str(testLoss)+"\t"+str(validationLoss)+
-                      "\t"+str(trainingTime)+"\t"+str(epochsNo)+"\t"+str(selectedEpoch)+"\t"+status+"\n")
+                      "\t"+str(trainingTime)+"\t"+str(epochsNo)+"\t"+str(selectedEpoch)+"\t"+status+"\t"+str(r)+"\t"+str(r2)+"\n")
         
         logFile.close()
 

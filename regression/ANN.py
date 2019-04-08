@@ -16,6 +16,5 @@ nnm = NeuralNetworkManager(data)
 #nnm.generateNetworks()
 #for i in range(4, 10):
 #    nnm.tryNN( i, "tanh", "linear", "gradientDescent" )
-for i in range(60):
-    print(i)
-    nnm.tryNN( 6, "tanh", "linear", "gradientDescent" )
+
+nnm.runNN( 6, "tanh", "linear", "gradientDescent" )

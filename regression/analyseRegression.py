@@ -18,7 +18,7 @@ def mse( A, B):
 
 data = DataPreprocessor()
 
-with open('ANNbest.pickle', 'rb') as f:
+with open('ANNbestinputs20.inp.pickle', 'rb') as f:
     loadedNN = pickle.load(f)
     
 print("train")
@@ -32,4 +32,4 @@ print(mse( loadedNN.predict(data.validationX), data.validationY ))
     
 predicted = loadedNN.predict( data.allX.values )
 
-a,b = data.comparePredictedVsReal(predicted)
+a, b, r,r2 = data.comparePredictedVsReal(predicted)

@@ -27,7 +27,7 @@ nnm = NeuralNetworkManager(data)
 dataPerFile = 20
 
 nNeuronsInHiddenLayer = range(  nnm.nOutputs + 1, nnm.nInputs )
-runsForOneNN = 5
+runsForOneNN = 10
 
 actualI = 0
 actualFile = open( join( inputDir, str(actualI)+".inp" ),'w' )
@@ -47,7 +47,7 @@ for hiddenNno in nNeuronsInHiddenLayer:
                     if dataInActualFile >= dataPerFile:
                         dataInActualFile = 0
                         actualFile.close()
-                        actualI += 2
+                        actualI += 1
                         
                         actualFile = open( join( inputDir, str(actualI)+".inp" ),'w' )
                         
