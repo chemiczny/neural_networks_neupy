@@ -16,6 +16,7 @@ inputName = sys.argv[1]
 
 fileId = basename(inputName)
 fileId = inputName.replace(".inp", "")
+fileId = inputName.replace("/", "")
 
 data = DataPreprocessor()
 nnm = NeuralNetworkManager(data, fileId)
