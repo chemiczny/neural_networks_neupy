@@ -7,6 +7,7 @@ Created on Sun Apr  7 10:35:20 2019
 """
 import sys
 from os.path import isdir
+from os import mkdir
 if isdir("/net/people/plgglanow/pythonPackages") and not "/net/people/plgglanow/pythonPackages" in sys.path :
     sys.path.insert(0, "/net/people/plgglanow/pythonPackages" )
     
@@ -69,7 +70,7 @@ class ControlTraining(object):
     
         
 class NeuralNetworkManager:
-    def __init__(self, dataObject):
+    def __init__(self, dataObject, filesId = "0"):
         self.trainX = dataObject.trainX.values
         self.trainY = dataObject.trainY.values
         
@@ -89,7 +90,7 @@ class NeuralNetworkManager:
             print("Different number of columns in train, test and validation set!")
             
         self.nOutputs = 1
-        self.nNeuronsInHiddenLayer = range( self.nOutputs + 1, self.nInputs*2 )
+        
         self.activationFunctionHiddenLayer = {
 #                "linear" : layers.Linear,
                 "sigmoid" : layers.Sigmoid,
@@ -105,15 +106,20 @@ class NeuralNetworkManager:
         
         self.optimizers = {
                 "gradientDescent" : algorithms.GradientDescent,
-#                "conjugateGradient" : algorithms.ConjugateGradient,
+                "conjugateGradient" : algorithms.ConjugateGradient,
                 "quasiNewton" : algorithms.QuasiNewton,
-#                "hessian" : algorithms.Hessian,
+                "hessian" : algorithms.Hessian,
                 "LevenbergMarquardt": algorithms.LevenbergMarquardt
                 }
         
+        if not isdir("savedNN"):
+            mkdir("savedNN")
+            
+        if not isdir("results"):
+            mkdir("results")
         
-        self.bestNNfile = "ANNbest.pickle"
-        self.resultsLog = "results.dat"
+        self.bestNNfile = "savedNN/ANNbest"+filesId+".pickle"
+        self.resultsLog = "results/results"+filesId+".dat"
         self.lowestError = 999
         
         self.initResultsFile()
@@ -122,7 +128,8 @@ class NeuralNetworkManager:
         self.epochsNoCheck = 50
         self.maxEpochsValidationErrorIsRising = 10
         
-        self.noTryOneNN = 3
+        self.fileId = filesId
+#        self.noTryOneNN = 3
         
         
     def initResultsFile(self):
@@ -133,19 +140,19 @@ class NeuralNetworkManager:
         
         resFile.close()
         
-    def generateNetworks(self):
-        self.NNno = 0
-        for hiddenNno in self.nNeuronsInHiddenLayer:
-            for afHidden in self.activationFunctionHiddenLayer:
-                for afOut in self.activationFunctionOutputLayer:
-                    for optim in self.optimizers:
-                        self.runNN( hiddenNno, afHidden, afOut, optim )
+#    def generateNetworks(self):
+#        self.NNno = 0
+#        for hiddenNno in self.nNeuronsInHiddenLayer:
+#            for afHidden in self.activationFunctionHiddenLayer:
+#                for afOut in self.activationFunctionOutputLayer:
+#                    for optim in self.optimizers:
+#                        self.runNN( hiddenNno, afHidden, afOut, optim )
+                        
+#    def runNN(self, hiddenNeurons, afHidden, afOut, optim):
+#        for i in range(self.noTryOneNN):
+#            self.tryNN(hiddenNeurons, afHidden, afOut, optim)
                         
     def runNN(self, hiddenNeurons, afHidden, afOut, optim):
-        for i in range(self.noTryOneNN):
-            self.tryNN(hiddenNeurons, afHidden, afOut, optim)
-                        
-    def tryNN(self, hiddenNeurons, afHidden, afOut, optim):
         network = layers.join( layers.Input( self.nInputs ) ,
                                     self.activationFunctionHiddenLayer[afHidden]( hiddenNeurons),
                                     self.activationFunctionOutputLayer[afOut]( self.nOutputs ))
@@ -181,7 +188,7 @@ class NeuralNetworkManager:
     def logRow( self, hiddenNeurons, afHidden, afOut, optim, trainLoss, testLoss, validationLoss, trainingTime, epochsNo, status, selectedEpoch):
         logFile = open( self.resultsLog, "a" )
         
-        logFile.write( "-1\t"+str(hiddenNeurons)+"\t"+
+        logFile.write( self.fileId + "\t"+str(hiddenNeurons)+"\t"+
                       afHidden+"\t"+afOut+"\t"+
                       optim+"\t"+str(trainLoss)+
                       "\t"+str(testLoss)+"\t"+str(validationLoss)+
