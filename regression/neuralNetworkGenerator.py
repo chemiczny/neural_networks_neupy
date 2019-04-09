@@ -109,8 +109,8 @@ class NeuralNetworkManager:
         
         self.activationFunctionOutputLayer =  {
                 "linear" : layers.Linear,
-                "sigmoid" : layers.Sigmoid
-#                "tanh" : layers.Tanh
+                "sigmoid" : layers.Sigmoid,
+                "tanh" : layers.Tanh
                 }
         
         self.optimizers = {
@@ -133,6 +133,7 @@ class NeuralNetworkManager:
         self.bestNNfile = "savedNN/ANNbest"+filesId+".pickle"
         self.resultsLog = "results/results"+filesId+".dat"
         self.lowestError = 999
+        self.bestR2 = 0
         
         self.initResultsFile()
         
@@ -171,8 +172,8 @@ class NeuralNetworkManager:
             
             if validationLoss < self.lowestError:
                 self.lowestError = validationLoss
-                with open( self.bestNNfile , 'wb') as f:
-                    pickle.dump(optimizer, f)
+#                with open( self.bestNNfile , 'wb') as f:
+#                    pickle.dump(optimizer, f)
                     
             epochsNo = optimizer.last_epoch
             status = optimizer.signals.status
@@ -181,6 +182,11 @@ class NeuralNetworkManager:
             allPredicted = optimizer.predict( self.allX )
             
             a, b, r, r2 = self.dataObject.comparePredictedVsReal(allPredicted)
+            
+            if r2 > self.bestR2:
+                self.bestR2 = r2
+                with open( self.bestNNfile , 'wb') as f:
+                    pickle.dump(optimizer, f)
             
             self.logRow( hiddenNeurons, afHidden, afOut, optim, trainLoss, testLoss, validationLoss, trainingTime, epochsNo, status, selectedEpoch, r, r2 )
         except:
