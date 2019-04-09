@@ -38,7 +38,7 @@ dataInActualFile = 0
 for nr in nRows:
     for nc in nCols:
         for lr in sofm.learningRadius:
-            if lr <= min(nr, nc):
+            if lr >= max(nr, nc):
                 continue
             
             for wi in sofm.weightInit:
