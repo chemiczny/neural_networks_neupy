@@ -19,7 +19,7 @@ def mse( A, B):
 
 data = DataPreprocessor()
 
-with open('savedNN/ANNbestinputs65.inp.pickle', 'rb') as f:
+with open('savedNN/ANNbestinputs588.inp.pickle', 'rb') as f:
     loadedNN = pickle.load(f)
     
 print("train")

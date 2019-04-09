@@ -29,6 +29,7 @@ class ControlTraining(object):
         self.timeStart = time()
         self.status = "Epochs no exceeded"
         self.epochSelected = -1
+        self.maxEpochsAfterLocalminimum = int(1.5*self.maxEpochsValidationErrorIsRising)
         
     
     def epoch_end(self, optimizer):
@@ -52,6 +53,10 @@ class ControlTraining(object):
             
         if self.epochsValidationErrorIsRising > self.maxEpochsValidationErrorIsRising:
             self.status = "Testing error rise"
+            raise StopTraining("Training has been interrupted")
+            
+        if self.epochSelected > 0 and self.epochsNo - self.epochSelected > self.maxEpochsAfterLocalminimum:
+            self.status = "No progress in test error"
             raise StopTraining("Training has been interrupted")
             
         last20trainErrors = optimizer.errors.train[-20:]
@@ -104,7 +109,7 @@ class NeuralNetworkManager:
         
         self.activationFunctionOutputLayer =  {
                 "linear" : layers.Linear,
-#                "sigmoid" : layers.Sigmoid,
+                "sigmoid" : layers.Sigmoid
 #                "tanh" : layers.Tanh
                 }
         
@@ -136,7 +141,6 @@ class NeuralNetworkManager:
         self.maxEpochsValidationErrorIsRising = 10
         
         self.fileId = filesId
-#        self.noTryOneNN = 3
         
         
     def initResultsFile(self):
