@@ -27,7 +27,7 @@ line = inputFile.readline()
 
 while line:
     args = line.split()
-    sofm.runSOFM( int(args[0]), args[1], args[2], args[3], args[4] )
+    sofm.runSOFM( int(args[0]), int(args[1]), int(args[2]), args[3], args[4] )
     
     line = inputFile.readline()
 
