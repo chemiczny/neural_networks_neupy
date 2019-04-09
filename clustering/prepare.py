@@ -43,6 +43,9 @@ for nr in nRows:
             
             for wi in sofm.weightInit:
                 for gt in sofm.gridType:
+                    if gt == "hexagon" and wi == "init_pca":
+                        continue
+                    
                     data = [ str(nr) , str(nc), str(lr), wi, gt ]
                     data = " ".join(data) + "\n"
                     actualFile.write(data)
