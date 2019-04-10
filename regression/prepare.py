@@ -27,7 +27,7 @@ nnm = NeuralNetworkManager(data)
 dataPerFile = 20
 
 nNeuronsInHiddenLayer = range(  5, 10 )
-runsForOneNN = 200
+runsForOneNN = 800
 
 nnCounter = 0
 

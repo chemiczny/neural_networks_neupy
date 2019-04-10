@@ -108,20 +108,20 @@ class NeuralNetworkManager:
                 }
         
         self.activationFunctionOutputLayer =  {
-                "linear" : layers.Linear,
+#                "linear" : layers.Linear,
                 "sigmoid" : layers.Sigmoid,
-                "tanh" : layers.Tanh
+#                "tanh" : layers.Tanh
                 }
         
         self.optimizers = {
                 "gradientDescent" : algorithms.GradientDescent,
                 "conjugateGradient" : algorithms.ConjugateGradient,
                 "quasiNewton" : algorithms.QuasiNewton,
-                "hessian" : algorithms.Hessian,
+#                "hessian" : algorithms.Hessian,
                 "LevenbergMarquardt": algorithms.LevenbergMarquardt,
                 "RPROP" : algorithms.RPROP,
                 "iRPROPPlus" : algorithms.IRPROPPlus,
-                "Adam" : algorithms.Adam
+#                "Adam" : algorithms.Adam
                 }
         
         if not isdir("savedNN"):
