@@ -13,6 +13,7 @@ if isdir("/net/people/plgglanow/pythonPackages") and not "/net/people/plgglanow/
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import networkx as nx
 
 class DataPreprocessor:
     def __init__(self):
@@ -64,7 +65,7 @@ class DataPreprocessor:
 #        self.trainY = concatenated[ "Typ Nowotworu" ]
         
         
-    def analyseCorrelationMatrix(self):
+    def analyseCorrelationMatrix(self, threshold = 0.9):
         columns =  self.inputColumns
         
         data2test = self.data[ columns ]
@@ -74,14 +75,37 @@ class DataPreprocessor:
         
         n_rows, n_cols = correlationMatrix.shape
         
+        correlactionGraph = nx.Graph()
+        
         for i in range(n_rows):
             for j in range(i):
-                if abs(correlationMatrix[i,j]) > 0.7:
-#                    print( columns[i], columns[j], correlationMatrix[i,j] )
-                    plt.figure()
-                    plt.scatter(data2test[:,i], data2test[:,j])
-                    plt.xlabel(columns[i])
-                    plt.ylabel(columns[j])
+                if abs(correlationMatrix[i,j]) > threshold:
+                    print( columns[i], columns[j], correlationMatrix[i,j] )
+                    correlactionGraph.add_edge( columns[i], columns[j] )
+#                    plt.figure()
+#                    plt.scatter(data2test[:,i], data2test[:,j])
+#                    plt.xlabel(columns[i])
+#                    plt.ylabel(columns[j])
+                    
+#        plt.figure()
+#        layout = nx.spring_layout(correlactionGraph)
+#        nx.draw_networkx(correlactionGraph, layout)
+                    
+        columns2delete = []
+        
+        while True:
+            nodes =list(correlactionGraph.nodes)
+            
+            if not nodes:
+                break
+            
+            firstNode = nodes[0]
+            toDelete = list( nx.neighbors( correlactionGraph, firstNode ) )
+            columns2delete += toDelete
+            
+            correlactionGraph.remove_nodes_from( toDelete + [ firstNode] )
+                    
+        return columns2delete
                     
     def verifyPrediction(self, predictionMap):
         predictionMapList = predictionMap.tolist()
@@ -107,3 +131,9 @@ class DataPreprocessor:
             
         predictionErrorPercent = float(predictionError)/len(reference) *100
         return results, predictionError, predictionErrorPercent
+    
+    def removeFromInputcolumns(self, column2delete):
+        inputSet = set(self.inputColumns) - set(column2delete)
+        self.inputColumns = list( inputSet )
+        self.splitData()
+    

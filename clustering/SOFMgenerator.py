@@ -17,7 +17,7 @@ import pickle
 from time import time        
 
 class SOFMgenerator:
-    def __init__(self, dataObject, filesId = "0"):
+    def __init__(self, dataObject, filesId = "0", initResFile = True):
         self.dataObject = dataObject
         
         self.X = self.dataObject.trainX.values
@@ -38,7 +38,8 @@ class SOFMgenerator:
         self.resultsLog = "results/results"+filesId+".dat"
         self.lowestError = 999
         
-        self.initResultsFile()
+        if initResFile:
+            self.initResultsFile()
         
         self.fileId = filesId
         
@@ -47,7 +48,7 @@ class SOFMgenerator:
         resFile = open(self.resultsLog, 'w')
         
         resFile.write("ID\tOutput rows\tOutput cols\tLearning radius\t")
-        resFile.write("Weight init\tGrid type\tBad classified\tPrediction error\n")
+        resFile.write("Weight init\tGrid type\tBad classified\tPrediction error\tColumns taken no\tColumns taken\n")
         
         resFile.close()
                         
@@ -61,29 +62,30 @@ class SOFMgenerator:
             sofm = algorithms.SOFM( n_inputs = self.n_inputs, features_grid = (outputRows,outputCols) ,
                                    verbose = False, step = 0.5, learning_radius = learningRadius, grid_type = gridType,
                                    weight = weightInit)
-        try:
-            trainingStart = time()
-            sofm.train( self.X , epochs = 300 )
-            trainingTime = time() - trainingStart
-            
-            predictionResults, error, errorPercent = self.dataObject.verifyPrediction(  sofm.predict( self.X ) )
-            
-            if error < self.lowestError:
-                self.lowestError = error
-                with open( self.bestSOFMfile , 'wb') as f:
-                    pickle.dump(sofm, f)
-            
-            self.logRow( outputRows, outputCols, learningRadius, weightInit, gridType, error, errorPercent )
-        except:
-            pass
+#        try:
+        trainingStart = time()
+        sofm.train( self.X , epochs = 300 )
+        trainingTime = time() - trainingStart
+        
+        predictionResults, error, errorPercent = self.dataObject.verifyPrediction(  sofm.predict( self.X ) )
+        
+        if error < self.lowestError:
+            self.lowestError = error
+            with open( self.bestSOFMfile , 'wb') as f:
+                pickle.dump(sofm, f)
+                
+        self.logRow( outputRows, outputCols, learningRadius, weightInit, gridType, error, errorPercent )
+#        except:
+#            pass
         
                 
     def logRow( self, outputRows, outputCols, learningRadius, weightInit, gridType, error, errorPercent):
         logFile = open( self.resultsLog, "a" )
-        
+        columnsTaken = ":".join(self.dataObject.inputColumns)
         logFile.write( self.fileId + "\t"+str(outputRows)+"\t"+
                       str(outputCols)+"\t"+str(learningRadius)+"\t"+
                       weightInit+"\t"+str(gridType)+
-                      "\t"+str(error)+"\t"+str(errorPercent)+"\n")
+                      "\t"+str(error)+"\t"+str(errorPercent)+"\t"+
+                      str( len(self.dataObject.inputColumns) ) + "\t"+ columnsTaken+"\n")
         
         logFile.close()
