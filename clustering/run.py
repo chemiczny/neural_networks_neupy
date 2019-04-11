@@ -26,10 +26,10 @@ line = inputFile.readline()
 i = 0
 while line:
     args = line.split()
-    columns2remove = line.split("|")[1]
-    columns2remove = columns2remove.split(":")
+    rThreshold = float(args[5])
     
     data = DataPreprocessor()
+    columns2remove = data.analyseCorrelationMatrix(rThreshold)
     data.removeFromInputcolumns(columns2remove)
     
     initResFile = True

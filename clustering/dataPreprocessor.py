@@ -14,6 +14,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import networkx as nx
+from random import choice
 
 class DataPreprocessor:
     def __init__(self):
@@ -80,7 +81,7 @@ class DataPreprocessor:
         for i in range(n_rows):
             for j in range(i):
                 if abs(correlationMatrix[i,j]) > threshold:
-                    print( columns[i], columns[j], correlationMatrix[i,j] )
+#                    print( columns[i], columns[j], correlationMatrix[i,j] )
                     correlactionGraph.add_edge( columns[i], columns[j] )
 #                    plt.figure()
 #                    plt.scatter(data2test[:,i], data2test[:,j])
@@ -99,7 +100,7 @@ class DataPreprocessor:
             if not nodes:
                 break
             
-            firstNode = nodes[0]
+            firstNode = choice(nodes)
             toDelete = list( nx.neighbors( correlactionGraph, firstNode ) )
             columns2delete += toDelete
             
