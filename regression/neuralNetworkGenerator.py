@@ -114,13 +114,13 @@ class NeuralNetworkManager:
                 }
         
         self.optimizers = {
-                "gradientDescent" : algorithms.GradientDescent,
-                "conjugateGradient" : algorithms.ConjugateGradient,
-                "quasiNewton" : algorithms.QuasiNewton,
+#                "gradientDescent" : algorithms.GradientDescent,
+#                "conjugateGradient" : algorithms.ConjugateGradient,
+#                "quasiNewton" : algorithms.QuasiNewton,
 #                "hessian" : algorithms.Hessian,
-                "LevenbergMarquardt": algorithms.LevenbergMarquardt,
-                "RPROP" : algorithms.RPROP,
-                "iRPROPPlus" : algorithms.IRPROPPlus,
+                "LevenbergMarquardt": algorithms.LevenbergMarquardt
+#                "RPROP" : algorithms.RPROP,
+#                "iRPROPPlus" : algorithms.IRPROPPlus,
 #                "Adam" : algorithms.Adam
                 }
         
